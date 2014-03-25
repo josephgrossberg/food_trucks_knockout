@@ -3,10 +3,37 @@
 <head>
   <meta charset="utf-8">
   <title>learn.knockoutjs.com</title>
+  <link rel="stylesheet" href="http://learn.knockoutjs.com/Content/App/coderunner.css">
+  <link rel="stylesheet" href="http://learn.knockoutjs.com/Content/TutorialSpecific/webmail.css">
 </head>
 <body>
 
   <!-- begin View -->
+<p>
+    chosenId: <span data-bind="text: chosenFolderId" />
+    chosenFolderData: <span data-bind="text: chosenFolderData" />
+</p>
+<!-- Folders -->
+<ul class="folders" data-bind="foreach: folders">
+    <li data-bind="text: $data, 
+               css: { selected: $data == $root.chosenFolderId() },
+               click: $root.goToFolder"></li>
+</ul>
+
+<!-- Mails grid -->
+<table class="mails" data-bind="with: chosenFolderData">
+    <thead><tr><th>From</th><th>To</th><th>Subject</th><th>Date</th></tr></thead>
+    <tbody data-bind="foreach: mails">
+        <tr>
+            <td data-bind="text: from"></td>
+            <td data-bind="text: to"></td>
+            <td data-bind="text: subject"></td>
+            <td data-bind="text: date"></td>
+        </tr>     
+    </tbody>
+</table>
+
+
   <!-- end View -->
 
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
@@ -14,6 +41,24 @@
 
 <!-- begin ViewModel -->
 <script>
+function WebmailViewModel() {
+    // Data
+    var self = this;
+    self.folders = ['Inbox', 'Archive', 'Sent', 'Spam'];
+    self.chosenFolderId = ko.observable();
+    self.chosenFolderData = ko.observable();
+
+    // Behaviours
+    self.goToFolder = function(folder) { 
+        self.chosenFolderId(folder); 
+        $.get('http://learn.knockoutjs.com/mail', { folder: folder }, self.chosenFolderData);
+//http://learn.knockoutjs.com/mail?folder=Inbox
+    };
+
+    // Show inbox by default
+    self.goToFolder('Inbox');
+};
+ko.applyBindings(new WebmailViewModel());
 </script>
 <!-- end ViewModel -->
 
