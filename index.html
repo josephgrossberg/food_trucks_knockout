@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Knockout Food Trucks</title>
+</head>
+<body>
+  <!-- begin View -->
+  <p>Full information: <strong data-bind="text: fullInfo"></strong></p>
+  <p>Truck name: <a data-bind="attr: { href: url, title: name }"><strong data-bind="text: name"></a></strong>
+    </p>
+  <!-- end View -->
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+
+  <!-- begin ViewModel -->
+  <script>
+  var todayDayOffset = new Date().getDay();
+  var todayDoW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][todayDayOffset];
+
+  // starts at Tuesday
+  var foodTrucks = [
+  {name: "NO TRUCK"},
+  {name: "Roxy's Gourmet Grilled Cheese 2", url: "http://www.roxysgrilledcheese.com/"},
+  {name: "Benny's Crepe Cafe", url: "http://www.bennyscrepecafe.com/"},
+  {name: "The Chicken & Rice Guys 1", url: "http://thechickenriceguys.com/"},
+  {name: "Bon Me 2", url: "http://www.bonmetruck.com/"},
+  {name: "Mei Mei Street Kitchen", url: "http://www.meimeistreetkitchen.com/"},
+  {name: "NO TRUCK", url: ""},
+  ];
+
+  var FoodTruckModel = function(truck) {
+    if (truck.name) {
+      this.name = ko.observable(truck.name);
+    } else {
+      this.name = null;
+    }
+    this.url = ko.observable(truck.url);
+
+    this.fullInfo = ko.computed(function() {
+      return "Today is " + todayDoW + " and the truck is " + this.name();
+    }, this);
+  }
+
+  // Activates knockout.js
+  ko.applyBindings(new FoodTruckModel(foodTrucks[todayDayOffset]));
+  </script>
+  <!-- end ViewModel -->
+
+</body>
+</html>
